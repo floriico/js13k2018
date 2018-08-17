@@ -1,0 +1,19 @@
+{
+  "name": "js13k2018",
+  "version": "0.1.0",
+  "description": "",
+  "main": "js13k.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/floriico/js13k2018.git"
+  },
+  "author": "Florian Bellot <floriico@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/floriico/js13k2018/issues"
+  },
+  "homepage": "https://github.com/floriico/js13k2018#readme"
+}
