@@ -1,4 +1,4 @@
-class ComponentPosition {
+class Position {
   constructor (x, y) {
     this.x = x;
     this.y = y;
@@ -12,9 +12,14 @@ class ComponentPosition {
     return this.y;
   }
 
+  setPosition (x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
   static fromJson (options) {
-    return new ComponentPosition(options.x, options.y);
+    return new Position(options.x, options.y);
   }
 }
 
-module.exports = ComponentPosition;
+module.exports = Position;

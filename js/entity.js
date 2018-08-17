@@ -1,4 +1,4 @@
-const ComponentPosition = require('./component-position');
+const Position = require('./position');
 
 class Entity {
   constructor (options) {
@@ -6,9 +6,13 @@ class Entity {
     this.velocity = options.velocity;
   }
 
+  getPosition () {
+    return this.position;
+  }
+
   static fromJson (options) {
     let entityOptions = {};
-    options.position && (entityOptions.position = ComponentPosition.fromJson(options.position));
+    options.position && (entityOptions.position = Position.fromJson(options.position));
     return new Entity(entityOptions);
   }
 }

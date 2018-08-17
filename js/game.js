@@ -4,6 +4,9 @@ const Entity = require('./entity');
 const GraphicsSystem = require('./graphics-system');
 const PhysicsSystem = require('./physics-system');
 const Loop = require('./loop');
+const SpriteSheet = require('./sprite-sheet');
+const WorldMap = require('./world-map');
+const Camera = require('./camera');
 
 const States = {
   LOADING: 'loading',
@@ -14,15 +17,23 @@ const States = {
 class Game {
   constructor () {
     this.fsm = this._createFiniteStateMachine();
+    this.spriteSheet = new SpriteSheet();
     this.scenes = this._createScenes();
-    this.graphicsSystem = new GraphicsSystem();
-    this.physicsSystem = new PhysicsSystem();
+    this.worldMap = this._createWorldMap();
     this.player = this._createPlayer();
+    this.camera = this._createCamera();
+    this.graphicsSystem = this._createGraphicSystem();
+    this.physicsSystem = new PhysicsSystem();
     this.loop = new Loop({
       graphicsSystem: this.graphicsSystem,
       physicsSystem: this.physicsSystem
     });
     this._registerScene();
+  }
+
+  load () {
+    this.spriteSheet.generate();
+    this.worldMap.generate();
   }
 
   run () {
@@ -45,6 +56,12 @@ class Game {
     });
   }
 
+  _createCamera () {
+    return new Camera({
+      position: this.player.getPosition()
+    });
+  }
+
   _createScenes () {
     let scenes = {};
 
@@ -61,6 +78,21 @@ class Game {
     const entities = scene.getEntities();
     entities.forEach(this.graphicsSystem.register);
     entities.forEach(this.physicsSystem.register);
+  }
+
+  _createWorldMap () {
+    return new WorldMap({
+      width: 30,
+      height: 20
+    });
+  }
+
+  _createGraphicSystem () {
+    return new GraphicsSystem({
+      spriteSheet: this.spriteSheet,
+      worldMap: this.worldMap,
+      camera: this.camera
+    });
   }
 }
 
