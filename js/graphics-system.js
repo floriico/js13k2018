@@ -55,13 +55,37 @@ class GraphicsSystem {
   }
 
   _drawPlayer () {
-    const playerPosition = this.player.getPosition();
     const sprite = this.player.getSprite();
     const spritePosition = sprite.getPosition();
     const spriteSize = sprite.getSize();
+    const displayPosition = this._getPlayerDisplayPosition();
+
     this.graphicalContext.drawImage(this.spriteSheet.getCanvas(),
       spritePosition.getX(), spritePosition.getY(), spriteSize.getWidth(), spriteSize.getHeight(),
-      this.canvasCenter.getX(), this.canvasCenter.getY(), spriteSize.getWidth(), spriteSize.getHeight());
+      displayPosition.getX(), displayPosition.getY(), spriteSize.getWidth(), spriteSize.getHeight());
+  }
+
+  _getPlayerDisplayPosition () {
+    const playerPosition = this.player.getPosition();
+    const worldSize = this.worldMap.getPixelSize();
+    let x;
+    let y;
+
+    if (playerPosition.getX() < this.canvasCenter.getX()) {
+      x = playerPosition.getX();
+    } else if (playerPosition.getX() > (worldSize.getWidth() - this.canvasCenter.getX())) {
+      x = playerPosition.getX() - worldSize.getWidth();
+    } else {
+      x = this.canvasCenter.getX();
+    }
+    if (playerPosition.getY() < this.canvasCenter.getY()) {
+      y = playerPosition.getY();
+    } else if (playerPosition.getY() < (worldSize.getHeight() - this.canvasCenter.getY())) {
+      y = playerPosition.getY() - worldSize.getHeight();
+    } else {
+      y = this.canvasCenter.getY();
+    }
+    return new Position(x, y);
   }
 
   _createCanvasCenter () {

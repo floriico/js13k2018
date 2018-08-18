@@ -25,7 +25,7 @@ class WorldMap {
   }
 
   getPixelSize () {
-    return this.pixelSize();
+    return this.pixelSize;
   }
 
   static worldToTilePosition (worldPosition) {
