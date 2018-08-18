@@ -6,6 +6,7 @@ const PhysicsSystem = require('./physics-system');
 const Loop = require('./loop');
 const SpriteSheet = require('./sprite-sheet');
 const WorldMap = require('./world-map');
+const Size = require('./size');
 
 const States = {
   LOADING: 'loading',
@@ -74,9 +75,12 @@ class Game {
   }
 
   _createWorldMap () {
-    return new WorldMap({
+    const tileSize = new Size({
       width: 30,
       height: 20
+    });
+    return new WorldMap({
+      tileSize: tileSize
     });
   }
 
