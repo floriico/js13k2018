@@ -6,7 +6,6 @@ const PhysicsSystem = require('./physics-system');
 const Loop = require('./loop');
 const SpriteSheet = require('./sprite-sheet');
 const WorldMap = require('./world-map');
-const Camera = require('./camera');
 
 const States = {
   LOADING: 'loading',
@@ -21,7 +20,6 @@ class Game {
     this.scenes = this._createScenes();
     this.worldMap = this._createWorldMap();
     this.player = this._createPlayer();
-    this.camera = this._createCamera();
     this.graphicsSystem = this._createGraphicSystem();
     this.physicsSystem = new PhysicsSystem();
     this.loop = new Loop({
@@ -52,13 +50,8 @@ class Game {
 
   _createPlayer () {
     return Entity.fromJson({
-      position: { x: 0, y: 0 }
-    });
-  }
-
-  _createCamera () {
-    return new Camera({
-      position: this.player.getPosition()
+      position: { x: 0, y: 0 },
+      sprite: 'player'
     });
   }
 
@@ -91,7 +84,7 @@ class Game {
     return new GraphicsSystem({
       spriteSheet: this.spriteSheet,
       worldMap: this.worldMap,
-      camera: this.camera
+      player: this.player
     });
   }
 }

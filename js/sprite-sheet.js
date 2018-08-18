@@ -1,7 +1,8 @@
 const Sprite = require('./sprite');
 
 const Ids = {
-  ground1: Sprite.fromJson({ position: { x: 0, y: 0 }, size: { width: 16, height: 16 } })
+  ground1: Sprite.fromJson({ position: { x: 0, y: 0 }, size: { width: 16, height: 16 } }),
+  player: Sprite.fromJson({ position: { x: 0, y: 16 }, size: { width: 16, height: 16 } }),
 };
 
 class SpriteSheet {
@@ -16,6 +17,7 @@ class SpriteSheet {
 
   generate () {
     this._generateGround1();
+    this._generatePlayer();
   }
 
   _generateGround1 () {
@@ -27,6 +29,15 @@ class SpriteSheet {
     gc.strokeStyle = '#ff6600';
     gc.fillRect(position.getX(), position.getY(), size.getWidth(), size.getHeight());
     gc.strokeRect(position.getX(), position.getY(), size.getWidth(), size.getHeight());
+  }
+
+  _generatePlayer () {
+    const gc = this.graphicalContext;
+    const sprite = Ids.player;
+    const position = sprite.getPosition();
+    const size = sprite.getSize();
+    gc.fillStyle = '#0066FF';
+    gc.fillRect(position.getX(), position.getY(), size.getWidth(), size.getHeight());
   }
 }
 
