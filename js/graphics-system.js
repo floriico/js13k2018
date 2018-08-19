@@ -31,8 +31,8 @@ class GraphicsSystem {
   }
 
   _drawMap () {
-    const cameraPosition = this.player.getPosition();
-    const cameraTilePosition = WorldMap.worldToTilePosition(cameraPosition);
+    const playerPosition = this.player.getPosition();
+    const cameraTilePosition = WorldMap.worldToTilePosition(playerPosition);
     const tileWidth = Math.floor(this.canvas.width / 16);
     const tileHeight = Math.floor(this.canvas.height / 16);
     const tileLength = tileWidth * tileHeight;
@@ -68,20 +68,22 @@ class GraphicsSystem {
   _getPlayerDisplayPosition () {
     const playerPosition = this.player.getPosition();
     const worldSize = this.worldMap.getPixelSize();
+    const rightBound = worldSize.getWidth() - this.canvasCenter.getX();
+    const bottomBound = worldSize.getHeight() - this.canvasCenter.getY();
     let x;
     let y;
 
     if (playerPosition.getX() < this.canvasCenter.getX()) {
       x = playerPosition.getX();
-    } else if (playerPosition.getX() > (worldSize.getWidth() - this.canvasCenter.getX())) {
-      x = playerPosition.getX() - worldSize.getWidth();
+    } else if (playerPosition.getX() > rightBound) {
+      x = playerPosition.getX() - rightBound + this.canvasCenter.getX();
     } else {
       x = this.canvasCenter.getX();
     }
     if (playerPosition.getY() < this.canvasCenter.getY()) {
       y = playerPosition.getY();
-    } else if (playerPosition.getY() < (worldSize.getHeight() - this.canvasCenter.getY())) {
-      y = playerPosition.getY() - worldSize.getHeight();
+    } else if (playerPosition.getY() > bottomBound) {
+      y = playerPosition.getY() - bottomBound + this.canvasCenter.getY();
     } else {
       y = this.canvasCenter.getY();
     }

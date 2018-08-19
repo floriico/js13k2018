@@ -1,12 +1,13 @@
 const FiniteStateMachine = require('./finite-state-machine');
-const Scene = require('./scene');
 const Entity = require('./entity');
+const InputSystem = require('./input-system');
 const GraphicsSystem = require('./graphics-system');
 const PhysicsSystem = require('./physics-system');
 const Loop = require('./loop');
 const SpriteSheet = require('./sprite-sheet');
 const WorldMap = require('./world-map');
 const Size = require('./size');
+const Keyboard = require('./keyboard');
 
 const States = {
   LOADING: 'loading',
@@ -18,16 +19,18 @@ class Game {
   constructor () {
     this.fsm = this._createFiniteStateMachine();
     this.spriteSheet = new SpriteSheet();
-    this.scenes = this._createScenes();
     this.worldMap = this._createWorldMap();
     this.player = this._createPlayer();
+    this.entities = [this.player];
+    this.keyboard = new Keyboard();
+    this.inputSystem = this._createInputSystem();
     this.graphicsSystem = this._createGraphicSystem();
-    this.physicsSystem = new PhysicsSystem();
+    this.physicsSystem = this._createPhysicsSystem();
     this.loop = new Loop({
+      inputSystem: this.inputSystem,
       graphicsSystem: this.graphicsSystem,
       physicsSystem: this.physicsSystem
     });
-    this._registerScene();
   }
 
   load () {
@@ -52,26 +55,9 @@ class Game {
   _createPlayer () {
     return Entity.fromJson({
       position: { x: 0, y: 0 },
+      velocity: {x: 0, y: 0},
       sprite: 'player'
     });
-  }
-
-  _createScenes () {
-    let scenes = {};
-
-    scenes[States.LOAD] = new Scene();
-    scenes[States.RUN] = new Scene();
-    scenes[States.END] = new Scene();
-    return scenes;
-  }
-
-  _registerScene () {
-    this.graphicsSystem.clear();
-    this.physicsSystem.clear();
-    const scene = this.scenes[this.fsm.getState()];
-    const entities = scene.getEntities();
-    entities.forEach(this.graphicsSystem.register);
-    entities.forEach(this.physicsSystem.register);
   }
 
   _createWorldMap () {
@@ -84,11 +70,24 @@ class Game {
     });
   }
 
+  _createInputSystem () {
+    return new InputSystem({
+      player: this.player,
+      keyboard: this.keyboard
+    });
+  }
+
   _createGraphicSystem () {
     return new GraphicsSystem({
       spriteSheet: this.spriteSheet,
       worldMap: this.worldMap,
       player: this.player
+    });
+  }
+
+  _createPhysicsSystem () {
+    return new PhysicsSystem({
+      entities: this.entities
     });
   }
 }

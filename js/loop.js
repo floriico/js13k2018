@@ -4,6 +4,7 @@ class Loop {
   constructor (options) {
     this.lastUpdate = null;
     this.physicsTimeAccumulator = 0;
+    this.inputSystem = options.inputSystem;
     this.graphicsSystem = options.graphicsSystem;
     this.physicsSystem = options.physicsSystem;
   }
@@ -16,6 +17,7 @@ class Loop {
     this.lastUpdate || (this.lastUpdate = timestamp);
     const deltaTime = timestamp - this.lastUpdate;
     this.physicsTimeAccumulator += deltaTime;
+    this.inputSystem.update();
     if (this.physicsTimeAccumulator >= PHYSICS_REFRESH_RATE) {
       this.physicsTimeAccumulator -= PHYSICS_REFRESH_RATE;
       this.physicsSystem.update(PHYSICS_REFRESH_RATE);

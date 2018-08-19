@@ -1,10 +1,18 @@
 class PhysicsSystem {
-  constructor () {
-    this.entities = [];
+  constructor (options) {
+    this.entities = options.entities;
   }
 
-  update () {
-
+  update (elapsedTime) {
+    this.entities.forEach(function (entity) {
+      let position = entity.getPosition();
+      let velocity = entity.getVelocity();
+      if (velocity) {
+        let x = position.getX() + velocity.getX() * elapsedTime;
+        let y = position.getY() + velocity.getY() * elapsedTime;
+        position.setPosition(x, y);
+      }
+    });
   }
 
   clear () {
