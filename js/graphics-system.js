@@ -32,14 +32,18 @@ class GraphicsSystem {
 
   _drawMap () {
     const playerPosition = this.player.getPosition();
-    const camerPosition = new Position(
+    const cameraPosition = new Position(
       playerPosition.getX() - this.canvasCenter.getX(),
       playerPosition.getY() - this.canvasCenter.getY()
     );
-    const cameraTilePosition = WorldMap.worldToTilePosition(camerPosition);
+    const cameraTilePosition = WorldMap.worldToTilePosition(cameraPosition);
+    const pixelOffset = new Position(
+      Math.round(playerPosition.getX() % 16),
+      Math.round(playerPosition.getY() % 16),
+    );
     const cameraTileSize = new Size({
-      width: Math.floor(this.canvas.width / 16),
-      height: Math.floor(this.canvas.height / 16)
+      width: Math.floor(this.canvas.width / 16) + 1,
+      height: Math.floor(this.canvas.height / 16) + 1
     });
     const cameraTileNumber = cameraTileSize.getWidth() * cameraTileSize.getHeight();
     const currentTilePosition = new Position();
@@ -60,7 +64,7 @@ class GraphicsSystem {
       let size = sprite.getSize();
       this.graphicalContext.drawImage(this.spriteSheet.getCanvas(),
         position.getX(), position.getY(), size.getWidth(), size.getHeight(),
-        displayPosition.getX() * 16, displayPosition.getY() * 16,
+        displayPosition.getX() * 16 - pixelOffset.getX(), displayPosition.getY() * 16 - pixelOffset.getY(),
         size.getWidth(), size.getHeight());
     }
   }
