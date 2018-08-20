@@ -54,7 +54,7 @@ class Game {
 
   _createPlayer () {
     return Entity.fromJson({
-      position: { x: 0, y: 0 },
+      position: { x: 240, y: 160 },
       velocity: {x: 0, y: 0},
       sprite: 'player'
     });
@@ -62,8 +62,8 @@ class Game {
 
   _createWorldMap () {
     const tileSize = new Size({
-      width: 30,
-      height: 20
+      width: 300,
+      height: 200
     });
     return new WorldMap({
       tileSize: tileSize
@@ -87,7 +87,8 @@ class Game {
 
   _createPhysicsSystem () {
     return new PhysicsSystem({
-      entities: this.entities
+      entities: this.entities,
+      worldMap: this.worldMap
     });
   }
 }

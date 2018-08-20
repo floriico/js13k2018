@@ -1,6 +1,6 @@
 const WorldMap = require('./world-map');
 const Position = require('./position');
-const SpriteSheet = require('./sprite-sheet');
+const Size = require('./size');
 
 class GraphicsSystem {
   constructor (options) {
@@ -32,16 +32,27 @@ class GraphicsSystem {
 
   _drawMap () {
     const playerPosition = this.player.getPosition();
-    const cameraTilePosition = WorldMap.worldToTilePosition(playerPosition);
-    const tileWidth = Math.floor(this.canvas.width / 16);
-    const tileHeight = Math.floor(this.canvas.height / 16);
-    const tileLength = tileWidth * tileHeight;
+    const camerPosition = new Position(
+      playerPosition.getX() - this.canvasCenter.getX(),
+      playerPosition.getY() - this.canvasCenter.getY()
+    );
+    const cameraTilePosition = WorldMap.worldToTilePosition(camerPosition);
+    const cameraTileSize = new Size({
+      width: Math.floor(this.canvas.width / 16),
+      height: Math.floor(this.canvas.height / 16)
+    });
+    const cameraTileNumber = cameraTileSize.getWidth() * cameraTileSize.getHeight();
     const currentTilePosition = new Position();
+    const displayPosition = new Position();
 
-    for (let i = 0; i < tileLength; i++) {
+    for (let i = 0; i < cameraTileNumber; i++) {
+      displayPosition.setPosition(
+        Math.floor(i % cameraTileSize.getWidth()),
+        Math.floor(i / cameraTileSize.getWidth())
+      );
       currentTilePosition.setPosition(
-        Math.floor(i % tileWidth),
-        Math.floor(i / tileWidth)
+        displayPosition.getX() + cameraTilePosition.getX(),
+        displayPosition.getY() + cameraTilePosition.getY()
       );
       let tile = this.worldMap.getTile(currentTilePosition);
       let sprite = tile.getSprite();
@@ -49,7 +60,7 @@ class GraphicsSystem {
       let size = sprite.getSize();
       this.graphicalContext.drawImage(this.spriteSheet.getCanvas(),
         position.getX(), position.getY(), size.getWidth(), size.getHeight(),
-        currentTilePosition.getX() * 16, currentTilePosition.getY() * 16,
+        displayPosition.getX() * 16, displayPosition.getY() * 16,
         size.getWidth(), size.getHeight());
     }
   }
@@ -87,7 +98,10 @@ class GraphicsSystem {
     } else {
       y = this.canvasCenter.getY();
     }
-    return new Position(x, y);
+    return new Position(
+      Math.round(x),
+      Math.round(y)
+    );
   }
 
   _createCanvasCenter () {

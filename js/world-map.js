@@ -12,10 +12,23 @@ class WorldMap {
   }
 
   generate () {
+    const tilePosition = new Position();
     for (let i = 0; i < this.tileNumber; i++) {
-      this.tiles[i] = new WorldTile({
-        sprite: SpriteSheet.Ids.ground1
-      });
+      tilePosition.setPosition(
+        Math.floor(i % this.tileSize.getWidth()),
+        Math.floor(i / this.tileSize.getWidth())
+      );
+      if ((tilePosition.getX() < 15) || (tilePosition.getX() > this.tileSize.getWidth() - 15) ||
+          (tilePosition.getY() < 10) || (tilePosition.getY() > this.tileSize.getHeight() - 10)) {
+        this.tiles[i] = new WorldTile({
+          sprite: SpriteSheet.Ids.ground3
+        });
+      } else {
+        let tileId = 'ground' + Math.floor(Math.random() * 2 + 1);
+        this.tiles[i] = new WorldTile({
+          sprite: SpriteSheet.Ids[tileId]
+        });
+      }
     }
   }
 

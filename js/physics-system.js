@@ -1,6 +1,7 @@
 class PhysicsSystem {
   constructor (options) {
     this.entities = options.entities;
+    this.worldMap = options.WorldMap;
   }
 
   update (elapsedTime) {
