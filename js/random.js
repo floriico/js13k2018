@@ -10,6 +10,10 @@ class Random {
     this.seed = (G * this.seed) % N;
     return this.seed / N;
   }
+
+  nextInRange (min, max) {
+    return min + Math.floor(this.next() * (max - min));
+  }
 }
 
 module.exports = Random;

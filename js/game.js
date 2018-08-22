@@ -6,6 +6,7 @@ const PhysicsSystem = require('./physics-system');
 const Loop = require('./loop');
 const SpriteSheet = require('./sprite-sheet');
 const WorldMap = require('./world-map');
+const WorldMapGenerator = require('./world-map-generator');
 const Size = require('./size');
 const Keyboard = require('./keyboard');
 
@@ -61,6 +62,14 @@ class Game {
   }
 
   _createWorldMap () {
+    const generator = new WorldMapGenerator({
+      seed: 42042,
+      width: 300,
+      height: 200
+    });
+
+    generator.randomize()
+      .smooth();
     const tileSize = new Size({
       width: 300,
       height: 200
