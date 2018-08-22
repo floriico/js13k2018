@@ -14,7 +14,11 @@ const Colors = {
   lightBrown: 'rgb(210, 170, 153)',
   lightBlue: 'rgb(109, 194, 202)',
   yellow: 'rgb(218, 212, 94)',
-  white: 'rgb(222, 238, 214)'
+  white: 'rgb(222, 238, 214)',
+  marsYellow: '#fda600',
+  marsOrange: '#e77d11',
+  marsDarkOrange: '#c1440e',
+  marsRed: '#451804',
 };
 
 module.exports = Colors;

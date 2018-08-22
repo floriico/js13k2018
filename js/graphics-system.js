@@ -39,7 +39,7 @@ class GraphicsSystem {
     const cameraTilePosition = WorldMap.worldToTilePosition(cameraPosition);
     const pixelOffset = new Position(
       Math.round(playerPosition.getX() % 16),
-      Math.round(playerPosition.getY() % 16),
+      Math.round(playerPosition.getY() % 16)
     );
     const cameraTileSize = new Size({
       width: Math.floor(this.canvas.width / 16) + 1,

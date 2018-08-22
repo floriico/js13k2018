@@ -21,10 +21,10 @@ class WorldMap {
       if ((tilePosition.getX() < 15) || (tilePosition.getX() > this.tileSize.getWidth() - 15) ||
           (tilePosition.getY() < 10) || (tilePosition.getY() > this.tileSize.getHeight() - 10)) {
         this.tiles[i] = new WorldTile({
-          sprite: SpriteSheet.Ids.ground3
+          sprite: SpriteSheet.Ids.ground6
         });
       } else {
-        let tileId = 'ground' + Math.floor(Math.random() * 2 + 1);
+        let tileId = 'ground' + Math.floor(Math.random() * 9 + 1);
         this.tiles[i] = new WorldTile({
           sprite: SpriteSheet.Ids[tileId]
         });
