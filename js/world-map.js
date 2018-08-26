@@ -1,57 +1,51 @@
 const WorldTile = require('./world-tile');
-const SpriteSheet = require('./sprite-sheet');
 const Position = require('./position');
 const Size = require('./size');
 
 class WorldMap {
   constructor (options) {
-    this.tileSize = options.tileSize;
-    this.pixelSize = this._createPixelSize();
-    this.tileNumber = this.tileSize.getWidth() * this.tileSize.getHeight();
-    this.tiles = new Array(this.size);
-  }
-
-  generate () {
-    const tilePosition = new Position();
-    for (let i = 0; i < this.tileNumber; i++) {
-      tilePosition.setPosition(
-        Math.floor(i % this.tileSize.getWidth()),
-        Math.floor(i / this.tileSize.getWidth())
-      );
-      if ((tilePosition.getX() < 15) || (tilePosition.getX() > this.tileSize.getWidth() - 15) ||
-          (tilePosition.getY() < 10) || (tilePosition.getY() > this.tileSize.getHeight() - 10)) {
-        this.tiles[i] = new WorldTile({
-          sprite: SpriteSheet.Ids.ground6
-        });
-      } else {
-        let tileId = 'ground' + Math.floor(Math.random() * 9 + 1);
-        this.tiles[i] = new WorldTile({
-          sprite: SpriteSheet.Ids[tileId]
-        });
-      }
-    }
+    this.sizeInTile = options.sizeInTile;
+    this.sizeInPixel = this._createsizeInPixel();
+    this.tileNumber = this.sizeInTile.getWidth() * this.sizeInTile.getHeight();
+    this.tiles = options.tiles;
   }
 
   getTile (position) {
-    const id = position.getY() * this.tileSize.getWidth() + position.getX();
+    const width = this.sizeInTile.getWidth();
+    const height = this.sizeInTile.getHeight();
+    let x = position.getX();
+    if (x < 0) {
+      x += width;
+    } else if (x >= width) {
+      x -= width;
+    }
+    let y = position.getY();
+    if (y < 0) {
+      y += height;
+    } else if (y >= height) {
+      y -= height;
+    }
+    const id = y * this.sizeInTile.getWidth() + x;
     return this.tiles[id];
   }
 
-  getPixelSize () {
-    return this.pixelSize;
+  getSizeInPixel () {
+    return this.sizeInPixel;
   }
 
   static worldToTilePosition (worldPosition) {
+    const tileSize = WorldTile.getSize();
+
     return Position.fromJson({
-      x: Math.floor(worldPosition.x / 16),
-      y: Math.floor(worldPosition.y / 16)
+      x: Math.floor(worldPosition.x / tileSize.getWidth()),
+      y: Math.floor(worldPosition.y / tileSize.getHeight())
     });
   }
 
-  _createPixelSize () {
+  _createsizeInPixel () {
     return new Size({
-      width: this.tileSize.getWidth() * WorldTile.getSize().getWidth(),
-      height: this.tileSize.getHeight() * WorldTile.getSize().getHeight()
+      width: this.sizeInTile.getWidth() * WorldTile.getSize().getWidth(),
+      height: this.sizeInTile.getHeight() * WorldTile.getSize().getHeight()
     });
   }
 }

@@ -5,9 +5,7 @@ const GraphicsSystem = require('./graphics-system');
 const PhysicsSystem = require('./physics-system');
 const Loop = require('./loop');
 const SpriteSheet = require('./sprite-sheet');
-const WorldMap = require('./world-map');
 const WorldMapGenerator = require('./world-map-generator');
-const Size = require('./size');
 const Keyboard = require('./keyboard');
 
 const States = {
@@ -36,7 +34,6 @@ class Game {
 
   load () {
     this.spriteSheet.generate();
-    this.worldMap.generate();
   }
 
   run () {
@@ -63,20 +60,14 @@ class Game {
 
   _createWorldMap () {
     const generator = new WorldMapGenerator({
-      seed: 42042,
+      seed: 42342,
       width: 300,
       height: 200
     });
 
-    generator.randomize()
-      .smooth();
-    const tileSize = new Size({
-      width: 300,
-      height: 200
-    });
-    return new WorldMap({
-      tileSize: tileSize
-    });
+    return generator.randomize()
+      .smooth()
+      .build();
   }
 
   _createInputSystem () {

@@ -1,5 +1,8 @@
 const Random = require('./random');
 const Size = require('./size');
+const WorldMap = require('./world-map');
+const WorldTile = require('./world-tile');
+const SpriteSheet = require('./sprite-sheet');
 
 class WorldMapGenerator {
   constructor (options) {
@@ -14,7 +17,7 @@ class WorldMapGenerator {
 
   randomize () {
     for (let i = 0; i < this.tileNumber; i++) {
-      this.heightMap[i] = this.random.nextInRange(0, 9);
+      this.heightMap[i] = this.random.nextInRange(1, 12);
     }
     return this;
   }
@@ -26,9 +29,20 @@ class WorldMapGenerator {
       const right = this._getRightIndex(index);
       const left = this._getLeftIndex(index);
 
-      return (cell + map[top] + map[bottom] + map[left] + map[right] / 5);
+      return Math.min(cell, map[top], map[bottom], map[left], map[right], 9);
     }, this);
     return this;
+  }
+
+  build () {
+    return new WorldMap({
+      sizeInTile: this.size,
+      tiles: this.heightMap.map(function (cell) {
+        return new WorldTile({
+          sprite: SpriteSheet.Ids['ground' + cell]
+        });
+      })
+    });
   }
 
   _getTopIndex (index) {
@@ -49,17 +63,20 @@ class WorldMapGenerator {
 
   _getRightIndex (index) {
     let right;
-    if ((index % this.size.getWidth()) === 0) {
+    if ((index !== 0) && (index % this.size.getWidth()) === 0) {
       right = index - this.size.getWidth();
     } else {
       right = index + 1;
+      if (right === this.tileNumber) {
+        right = 0;
+      }
     }
     return right;
   }
 
   _getLeftIndex (index) {
     let left;
-    if ((index % this.size.getWidth) === 1) {
+    if ((index === 0) || (index % this.size.getWidth) === 1) {
       left = index + this.size.getWidth();
     } else {
       left = index - 1;

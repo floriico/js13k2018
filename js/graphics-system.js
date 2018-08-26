@@ -73,16 +73,17 @@ class GraphicsSystem {
     const sprite = this.player.getSprite();
     const spritePosition = sprite.getPosition();
     const spriteSize = sprite.getSize();
-    const displayPosition = this._getPlayerDisplayPosition();
+    const displayPosition = this.canvasCenter;
 
     this.graphicalContext.drawImage(this.spriteSheet.getCanvas(),
       spritePosition.getX(), spritePosition.getY(), spriteSize.getWidth(), spriteSize.getHeight(),
       displayPosition.getX(), displayPosition.getY(), spriteSize.getWidth(), spriteSize.getHeight());
+    this.graphicalContext.fillText(this.player.getPosition().getX() + ' ' + this.player.getPosition().getY(), 400, 10);
   }
 
   _getPlayerDisplayPosition () {
     const playerPosition = this.player.getPosition();
-    const worldSize = this.worldMap.getPixelSize();
+    const worldSize = this.worldMap.getSizeInPixel();
     const rightBound = worldSize.getWidth() - this.canvasCenter.getX();
     const bottomBound = worldSize.getHeight() - this.canvasCenter.getY();
     let x;
