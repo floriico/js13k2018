@@ -1,6 +1,4 @@
 const Sprite = require('./sprite');
-const Random = require('./random');
-const Position = require('./position');
 const Colors = require('./colors');
 const TextureGenerator = require('./texture-generator');
 
@@ -135,36 +133,6 @@ class SpriteSheet {
     generator.fill(Colors.marsDarkOrange)
       .particules(32, Colors.marsOrange)
       .particules(32, Colors.marsYellow);
-  }
-
-  _generateLava () {
-    this._generateSand(Ids.lava, 79797, '#ff3300', '#ff0000', '#ffff00');
-  }
-
-  _generateSand (sprite, seed, color1, color2, color3) {
-    const gc = this.graphicalContext;
-    const position = sprite.getPosition();
-    const size = sprite.getSize();
-    const random = new Random(seed);
-    gc.fillStyle = color1;
-    gc.fillRect(position.getX(), position.getY(), size.getWidth(), size.getHeight());
-    const dot = new Position();
-    gc.fillStyle = color2;
-    for (let i = 0; i < 32; i++) {
-      dot.setPosition(
-        position.getX() + Math.floor(random.next() * 15),
-        position.getY() + Math.floor(random.next() * 15)
-      );
-      gc.fillRect(dot.getX(), dot.getY(), 1, 1);
-    }
-    gc.fillStyle = color3;
-    for (let i = 0; i < 16; i++) {
-      dot.setPosition(
-        position.getX() + Math.floor(random.next() * 15),
-        position.getY() + Math.floor(random.next() * 15)
-      );
-      gc.fillRect(dot.getX(), dot.getY(), 1, 1);
-    }
   }
 
   _generatePlayer () {
