@@ -33,6 +33,32 @@ class WorldMap {
     return this.sizeInPixel;
   }
 
+  normalizePixelPosition (position) {
+    const pixelWidth = this.sizeInPixel.getWidth();
+    const pixelHeight = this.sizeInPixel.getHeight();
+    let isNormalized = false;
+    let x = position.getX();
+    let y = position.getY();
+
+    if (x < 0) {
+      x += pixelWidth;
+      isNormalized = true;
+    } else if (x > pixelWidth) {
+      x -= pixelWidth;
+      isNormalized = true;
+    }
+    if (y < 0) {
+      y += pixelHeight;
+      isNormalized = true;
+    } else if (y > pixelHeight) {
+      y -= pixelHeight;
+      isNormalized = true;
+    }
+    return isNormalized
+      ? new Position(x, y)
+      : position;
+  }
+
   static worldToTilePosition (worldPosition) {
     const tileSize = WorldTile.getSize();
 

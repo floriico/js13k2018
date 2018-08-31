@@ -6,12 +6,12 @@ class GraphicsSystem {
   constructor (options) {
     this.spriteSheet = options.spriteSheet;
     this.worldMap = options.worldMap;
-    this.player = options.player;
     this.camera = options.camera;
     this.canvas = document.getElementById('screen');
     this.canvasCenter = this._createCanvasCenter();
     this.graphicalContext = this.canvas.getContext('2d');
-    this.entities = [];
+    this.entities = options.entities;
+    this.player = this.entities[0];
   }
 
   update () {
@@ -20,6 +20,7 @@ class GraphicsSystem {
     gc.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this._drawMap();
     this._drawPlayer();
+    this._drawEntities();
   }
 
   register (entity) {
@@ -32,10 +33,7 @@ class GraphicsSystem {
 
   _drawMap () {
     const playerPosition = this.player.getPosition();
-    const cameraPosition = new Position(
-      playerPosition.getX() - this.canvasCenter.getX(),
-      playerPosition.getY() - this.canvasCenter.getY()
-    );
+    const cameraPosition = this._getCameraPositionInPixel();
     const cameraTilePosition = WorldMap.worldToTilePosition(cameraPosition);
     const pixelOffset = new Position(
       Math.round(playerPosition.getX() % 16),
@@ -67,6 +65,14 @@ class GraphicsSystem {
         displayPosition.getX() * 16 - pixelOffset.getX(), displayPosition.getY() * 16 - pixelOffset.getY(),
         size.getWidth(), size.getHeight());
     }
+  }
+
+  _getCameraPositionInPixel () {
+    const playerPosition = this.player.getPosition();
+    return new Position(
+      playerPosition.getX() - this.canvasCenter.getX(),
+      playerPosition.getY() - this.canvasCenter.getY()
+    );
   }
 
   _drawPlayer () {
@@ -114,6 +120,51 @@ class GraphicsSystem {
       x: Math.floor(this.canvas.width / 2),
       y: Math.floor(this.canvas.height / 2)
     });
+  }
+
+  _drawEntities () {
+    const cameraPosition = this._getCameraPositionInPixel();
+    const len = this.entities.length;
+    for (let i = 1; i < len; i++) {
+      const entity = this.entities[i];
+      const entityPosition = entity.getPosition();
+      if (this._isInViewport(entityPosition)) {
+        const sprite = entity.getSprite();
+        const spritePosition = sprite.getPosition();
+        const spriteSize = sprite.getSize();
+        const displayPosition = this.worldMap.normalizePixelPosition(new Position(
+          entityPosition.getX() - cameraPosition.getX(),
+          entityPosition.getY() - cameraPosition.getY()
+        ));
+        this.graphicalContext.drawImage(this.spriteSheet.getCanvas(),
+          spritePosition.getX(), spritePosition.getY(), spriteSize.getWidth(), spriteSize.getHeight(),
+          displayPosition.getX(), displayPosition.getY(), spriteSize.getWidth(), spriteSize.getHeight());
+      }
+    }
+  }
+
+  _isInViewport (position) {
+    const cameraPosition = this._getCameraPositionInPixel();
+    const playerPosition = this.player.getPosition();
+    const worldSize = this.worldMap.getSizeInPixel();
+    let isInViewportWidth;
+    let isInViewportHeight;
+
+    if (playerPosition.getX() > (worldSize.getWidth() - this.canvasCenter.getX())) {
+      isInViewportWidth = (position.getX() >= cameraPosition.getX() || position.getX() >= 0) &&
+          (position.getX() <= ((cameraPosition.getX() + this.canvas.width) % worldSize.getWidth()));
+    } else {
+      isInViewportWidth = position.getX() >= cameraPosition.getX() &&
+        position.getX() <= (cameraPosition.getX() + this.canvas.width);
+    }
+    if (playerPosition.getY() > (worldSize.getHeight() - this.canvasCenter.getX())) {
+      isInViewportHeight = (position.getY() >= cameraPosition.getY() || position.getY() >= 0) &&
+        (position.getY() <= ((cameraPosition.getY() + this.canvas.height) % worldSize.getHeight()));
+    } else {
+      isInViewportHeight = position.getY() >= cameraPosition.getY() &&
+      position.getY() <= (cameraPosition.getY() + this.canvas.height);
+    }
+    return isInViewportWidth && isInViewportHeight;
   }
 }
 

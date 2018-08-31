@@ -7,6 +7,7 @@ const Loop = require('./loop');
 const SpriteSheet = require('./sprite-sheet');
 const WorldMapGenerator = require('./world-map-generator');
 const Keyboard = require('./keyboard');
+const CristalGenerator = require('./cristal-generator');
 
 const States = {
   LOADING: 'loading',
@@ -34,6 +35,7 @@ class Game {
 
   load () {
     this.spriteSheet.generate();
+    this._generateEntities();
   }
 
   run () {
@@ -81,7 +83,7 @@ class Game {
     return new GraphicsSystem({
       spriteSheet: this.spriteSheet,
       worldMap: this.worldMap,
-      player: this.player
+      entities: this.entities
     });
   }
 
@@ -90,6 +92,13 @@ class Game {
       entities: this.entities,
       worldMap: this.worldMap
     });
+  }
+
+  _generateEntities () {
+    const generator = new CristalGenerator({
+      seed: 424242
+    });
+    this.entities.push(generator.build());
   }
 }
 
